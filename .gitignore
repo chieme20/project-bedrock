@@ -1,0 +1,23 @@
+# Local secret and system environment tracking files
+.env
+.env.local
+*.pem
+*.pfx
+*.pkcs12
+*.key
+*.secret
+
+# Terraform specific engine cache and state data folders
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+.terraform.lock.hcl
+
+# Local machine log and binary bundles
+*.log
+*.zip
+*.tar.gz
+.DS_Store
+Thumbs.db

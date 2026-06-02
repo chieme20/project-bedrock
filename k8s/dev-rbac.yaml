@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: bedrock-developer-view-binding
+subjects:
+- kind: Group
+  name: reader-group # Matches the exact group string we injected in developer.tf
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: view # Use the native, built-in Kubernetes Read-Only cluster role standard
+  apiGroup: rbac.authorization.k8s.io
