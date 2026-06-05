@@ -15,5 +15,5 @@ variable "cluster_name" {
 
 variable "student_id" {
   type    = string
-  default = "Martina Chiemezuo" 
+  default = "martina-chiemezuo" 
 }

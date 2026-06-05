@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "assets_bucket" {
-  bucket = "bedrock-assets-martina-chiemezuo"
+  bucket        = "bedrock-assets-${var.student_id}"
   force_destroy = true 
 }
 
