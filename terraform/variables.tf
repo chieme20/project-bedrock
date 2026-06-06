@@ -15,5 +15,5 @@ variable "cluster_name" {
 
 variable "student_id" {
   type    = string
-  default = "martina-chiemezuo" 
+  default = "alt-soe-025-3671" 
 }
