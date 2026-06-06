@@ -41,9 +41,9 @@ resource "aws_eks_node_group" "bedrock_nodes" {
   instance_types = ["t3.medium"] 
 
   scaling_config {
-    desired_size = 2  
-    max_size     = 3
-    min_size     = 1
+    desired_size = 0  
+    max_size     = 1
+    min_size     = 0
   }
 
   update_config {
