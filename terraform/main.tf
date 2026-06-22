@@ -14,12 +14,12 @@ terraform {
   }
 
   
-  backend "s3" {
-    bucket         = "bedrock-tfstate-alt-soe-3671"
-    key            = "stage/terraform.tfstate"
-    region         = "us-east-1"
-  }
-}
+  #backend "s3" {
+   # bucket         = "bedrock-tfstate-alt-soe-3671"
+    #key            = "stage/terraform.tfstate"
+   # region         = "us-east-1"
+ # }
+#}
 
 provider "aws" {
   region = var.aws_region
