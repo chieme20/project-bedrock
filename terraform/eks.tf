@@ -61,7 +61,7 @@ resource "aws_eks_node_group" "bedrock_nodes" {
 resource "aws_eks_access_policy_association" "martina2_admin" {
   cluster_name  = "project-bedrock-cluster"
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-  principal_arn = "arn:aws:iam::301301199644:user/martina2"
+  principal_arn = "arn:aws:iam::301301199644:user/CHIMEZE"
 
   access_scope {
     type       = "cluster"
