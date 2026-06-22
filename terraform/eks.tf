@@ -40,12 +40,12 @@ resource "aws_eks_node_group" "bedrock_nodes" {
 
   instance_types = ["t3.medium"] 
 
+Terraform
   scaling_config {
     desired_size = 1
     max_size     = 1
     min_size     = 1
   }
-
   update_config {
     max_unavailable = 1
   }
@@ -57,7 +57,7 @@ resource "aws_eks_node_group" "bedrock_nodes" {
   ]
 }
 
-# KEEP ONLY THIS BLOCK IN YOUR FILE
+
 resource "aws_eks_access_policy_association" "martina2_admin" {
   cluster_name  = "project-bedrock-cluster"
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
