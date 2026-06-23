@@ -4,15 +4,16 @@
 # ==============================================================================
 
 terraform {
-  required_version = ">= 1.5.0"
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 5.0" 
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
     }
   }
-  # S3 backend completely removed to bypass AWS 403 / Bucket validation errors
 }
 
 provider "aws" {
@@ -23,4 +24,4 @@ provider "aws" {
       Project = "karatu-2025-capstone"
     }
   }
-}
+}cd ..
