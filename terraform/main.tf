@@ -1,13 +1,9 @@
-# ==============================================================================
-# AltSchool Karatu 2025 Third Semester Capstone Project - "Project Bedrock"
-# Root Configuration & Standard Local State Backend
-# ==============================================================================
-
 terraform {
+  required_version = ">= 1.5.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0" 
+      version = "~> 5.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -18,10 +14,11 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+}
 
-  default_tags {
-    tags = {
-      Project = "karatu-2025-capstone"
-    }
-  }
+# This is the random suffix generator that prevents name clashes on AWS
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
 }
