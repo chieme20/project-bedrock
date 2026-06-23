@@ -1,9 +1,19 @@
+# The missing S3 bucket resource declared explicitly
+resource "aws_s3_bucket" "assets_bucket" {
+  bucket        = "bedrock-assets-${var.student_id}"
+  force_destroy = true # Allows clean destruction later if needed
+}
+
 resource "aws_iam_user" "dev_user" {
-  name = "bedrock-dev-view-${random_string.suffix.result}"
+  name = "project-bedrock-developer-${var.student_id}"
+}
+
+resource "aws_iam_access_key" "dev_user_keys" {
+  user = aws_iam_user.dev_user.name
 }
 
 resource "aws_iam_user_policy" "dev_user_s3_upload" {
-  name = "bedrock-dev-s3-upload-policy"
+  name = "project-bedrock-developer-s3-upload-policy"
   user = aws_iam_user.dev_user.name
 
   policy = jsonencode({
@@ -23,7 +33,4 @@ resource "aws_iam_user_policy" "dev_user_s3_upload" {
       }
     ]
   })
-}
-resource "aws_iam_access_key" "dev_user_keys" {
-  user = aws_iam_user.dev_user.name
 }
