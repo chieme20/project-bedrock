@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "aws_lb_controller_policy" {
-  name        = "AWSLoadBalancerControllerIAMPolicy-v6"
+  name        = "AWSLoadBalancerControllerIAMPolicy-${random_string.suffix.result}"
   path        = "/"
   description = "AWS Load Balancer Controller IAM Policy"
 

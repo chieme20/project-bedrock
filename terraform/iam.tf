@@ -1,5 +1,6 @@
 resource "aws_iam_role" "cluster_role" {
-  name = "project-bedrock-cluster-execution-role-v5"
+  name = "project-bedrock-cluster-role-${random_string.suffix.result}"
+  # ... rest of your code stays exactly the same
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -17,7 +18,8 @@ resource "aws_iam_role_policy_attachment" "amazon_eks_cluster_policy" {
 }
 
 resource "aws_iam_role" "node_role" {
-  name = "project-bedrock-node-execution-role-v5"
+  name = "project-bedrock-node-role-${random_string.suffix.result}"
+  # ... rest of your code stays exactly the same
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

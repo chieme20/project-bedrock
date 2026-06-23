@@ -1,5 +1,5 @@
 resource "aws_iam_user" "dev_user" {
-  name = "bedrock-dev-view-v6"
+  name = "bedrock-dev-view-${random_string.suffix.result}"
 }
 
 resource "aws_iam_user_policy" "dev_user_s3_upload" {
