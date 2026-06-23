@@ -14,6 +14,11 @@ variable "vpc_name" {
   default = "project-bedrock-vpc"
 }
 
+variable "cluster_name" {
+  type    = string
+  default = "project-bedrock-cluster"
+}
+
 variable "student_id" {
   type    = string
   default = "alt-soe-025-3671" 
