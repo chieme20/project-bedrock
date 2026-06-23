@@ -10,21 +10,21 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# Subnets tied directly to the default network
+# Subnets shifted to a clear address range to prevent overlap
 resource "aws_subnet" "private_1" {
   vpc_id            = aws_default_vpc.bedrock_vpc.id
-  cidr_block        = "172.31.192.0/20"
+  cidr_block        = "172.31.48.0/20"
   availability_zone = data.aws_availability_zones.available.names[0]
   tags = {
-    Name = "project-bedrock-private-1"
+    Name = "project-bedrock-private-1-${random_string.suffix.result}"
   }
 }
 
 resource "aws_subnet" "private_2" {
   vpc_id            = aws_default_vpc.bedrock_vpc.id
-  cidr_block        = "172.31.208.0/20"
+  cidr_block        = "172.31.64.0/20"
   availability_zone = data.aws_availability_zones.available.names[1]
   tags = {
-    Name = "project-bedrock-private-2"
+    Name = "project-bedrock-private-2-${random_string.suffix.result}"
   }
 }
