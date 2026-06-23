@@ -1,6 +1,5 @@
 resource "aws_iam_role" "cluster_role" {
-  # CHANGED TO -v3 BELOW
-  name = "project-bedrock-cluster-execution-role-v3"
+  name = "project-bedrock-cluster-execution-role-v5"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -18,8 +17,7 @@ resource "aws_iam_role_policy_attachment" "amazon_eks_cluster_policy" {
 }
 
 resource "aws_iam_role" "node_role" {
-  # CHANGED TO -v3 BELOW
-  name = "project-bedrock-node-execution-role-v3"
+  name = "project-bedrock-node-execution-role-v5"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

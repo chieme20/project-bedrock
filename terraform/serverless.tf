@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "assets_bucket" {
-bucket = "bedrock-assets-alt-soe-025-3671-v3"
+bucket = "bedrock-assets-alt-soe-025-3671-v5"
   force_destroy = true 
 }
 
@@ -12,7 +12,7 @@ resource "aws_s3_bucket_public_access_block" "assets_bucket_privacy" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-name = "project-bedrock-lambda-execution-role-v3"
+name = "project-bedrock-lambda-execution-role-v5"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -38,7 +38,7 @@ data "archive_file" "lambda_zip" {
 
 
 resource "aws_lambda_function" "asset_processor" {
-  function_name    = "bedrock-asset-processor"
+  function_name    = "bedrock-asset-processor-v5"
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   role             = aws_iam_role.lambda_role.arn

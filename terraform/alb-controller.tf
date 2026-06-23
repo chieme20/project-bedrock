@@ -10,7 +10,7 @@ resource "aws_iam_openid_connect_provider" "eks" {
 
 
 resource "aws_iam_policy" "aws_lb_controller_policy" {
-  name = "AWSLoadBalancerControllerIAMPolicy-v3"
+ name = "AWSLoadBalancerControllerIAMPolicy-v5"
   path        = "/"
   description = "Allows EKS Load Balancer Controller to manage AWS networking infrastructure"
 
