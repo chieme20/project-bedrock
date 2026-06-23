@@ -24,4 +24,4 @@ provider "aws" {
       Project = "karatu-2025-capstone"
     }
   }
-}cd ..
+}
