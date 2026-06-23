@@ -11,7 +11,7 @@ resource "aws_db_subnet_group" "db_subnets" {
 resource "aws_security_group" "db_sg" {
   name        = "project-bedrock-database-sg-${random_string.suffix.result}"
   description = "Isolate database traffic to EKS cluster node pools"
- vpc_id      = aws_vpc.bedrock_vpc.id
+  vpc_id      = aws_vpc.bedrock_vpc.id
 
   ingress {
     from_port       = 3306
