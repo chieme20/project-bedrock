@@ -1,18 +1,10 @@
 resource "aws_s3_bucket" "assets_bucket" {
-bucket = "bedrock-assets-alt-soe-025-3671-v5"
-  force_destroy = true 
-}
-
-resource "aws_s3_bucket_public_access_block" "assets_bucket_privacy" {
-  bucket                  = aws_s3_bucket.assets_bucket.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  bucket        = "bedrock-assets-${var.student_id}-v6"
+  force_destroy = true
 }
 
 resource "aws_iam_role" "lambda_role" {
-name = "project-bedrock-lambda-execution-role-v5"
+  name = "project-bedrock-lambda-execution-role-v6"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -24,46 +16,26 @@ name = "project-bedrock-lambda-execution-role-v5"
   })
 }
 
-
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   role       = aws_iam_role.lambda_role.name
 }
 
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_file = "${path.module}/../lambda/process.py"
-  output_path = "${path.module}/../lambda/process.zip"
+resource "aws_iam_role_policy_attachment" "lambda_s3_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+  role       = aws_iam_role.lambda_role.name
 }
-
 
 resource "aws_lambda_function" "asset_processor" {
-  function_name    = "bedrock-asset-processor-v5"
-  filename         = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "process.lambda_handler"  
-  runtime          = "python3.11"
-  timeout          = 15
-}
+  filename      = "${path.module}/lambda_function.zip"
+  function_name = "bedrock-asset-processor-v6"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "index.handler"
+  runtime       = "nodejs18.x"
 
-
-resource "aws_lambda_permission" "allow_s3_invocation" {
-  statement_id  = "AllowS3Invoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.asset_processor.function_name
-  principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.assets_bucket.arn
-}
-
-
-resource "aws_s3_bucket_notification" "bucket_trigger" {
-  bucket = aws_s3_bucket.assets_bucket.id
-
-  lambda_function {
-    lambda_function_arn = aws_lambda_function.asset_processor.arn
-    events              = ["s3:ObjectCreated:*"] 
+  environment {
+    variables = {
+      S3_BUCKET = aws_s3_bucket.assets_bucket.id
+    }
   }
-
-  depends_on = [aws_lambda_permission.allow_s3_invocation]
 }

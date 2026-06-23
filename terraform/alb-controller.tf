@@ -1,26 +1,24 @@
-data "tls_certificate" "eks_oidc" {
-  url = aws_eks_cluster.bedrock_cluster.identity[0].oidc[0].issuer
-}
-
-resource "aws_iam_openid_connect_provider" "eks" {
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.eks_oidc.certificates[0].sha1_fingerprint]
-  url             = aws_eks_cluster.bedrock_cluster.identity[0].oidc[0].issuer
-}
-
-
 resource "aws_iam_policy" "aws_lb_controller_policy" {
- name = "AWSLoadBalancerControllerIAMPolicy-v5"
+  name        = "AWSLoadBalancerControllerIAMPolicy-v6"
   path        = "/"
-  description = "Allows EKS Load Balancer Controller to manage AWS networking infrastructure"
+  description = "AWS Load Balancer Controller IAM Policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
+        Effect   = "Allow"
+        Action   = ["iam:CreateServiceLinkedRole"]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "iam:AWSServiceName" = "elasticloadbalancing.amazonaws.com"
+          }
+        }
+      },
+      {
         Effect = "Allow"
         Action = [
-          "iam:CreateServiceLinkedRole",
           "ec2:DescribeAccountAttributes",
           "ec2:DescribeAddresses",
           "ec2:DescribeAvailabilityZones",
@@ -31,7 +29,7 @@ resource "aws_iam_policy" "aws_lb_controller_policy" {
           "ec2:DescribeInstances",
           "ec2:DescribeNetworkInterfaces",
           "ec2:DescribeTags",
-          "ec2:GetCoipPoolMscCollection",
+          "ec2:GetCoipPoolDetails",
           "ec2:DescribeCoipPools",
           "elasticloadbalancing:DescribeLoadBalancers",
           "elasticloadbalancing:DescribeLoadBalancerAttributes",
@@ -49,26 +47,97 @@ resource "aws_iam_policy" "aws_lb_controller_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:RevokeSecurityGroupIngress",
-          "ec2:CreateSecurityGroup",
-          "ec2:CreateTags",
-          "ec2:DeleteSecurityGroup"
+          "cognito-idp:DescribeUserPoolClient",
+          "acm:ListCertificates",
+          "acm:DescribeCertificate",
+          "iam:ListServerCertificates",
+          "iam:GetServerCertificate",
+          "waf-regional:GetWebACL",
+          "waf-regional:GetWebACLForResource",
+          "waf-regional:AssociateWebACL",
+          "waf-regional:DisassociateWebACL",
+          "wafv2:GetWebACL",
+          "wafv2:GetWebACLForResource",
+          "wafv2:AssociateWebACL",
+          "wafv2:DisassociateWebACL",
+          "shield:GetSubscription",
+          "shield:DescribeProtection",
+          "shield:CreateProtection",
+          "shield:DeleteProtection"
         ]
         Resource = "*"
       },
       {
         Effect = "Allow"
         Action = [
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = ["ec2:CreateSecurityGroup"]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = ["ec2:CreateTags"]
+        Resource = "arn:aws:ec2:*:*:security-group/*"
+        Condition = {
+          StringEquals = {
+            "ec2:CreateAction" = "CreateSecurityGroup"
+          }
+          Null = {
+            "ec2:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+          }
+        }
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:DeleteSecurityGroup"
+        ]
+        Resource = "*"
+        Condition = {
+          Null = {
+            "ec2:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+          }
+        }
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "elasticloadbalancing:CreateLoadBalancer",
           "elasticloadbalancing:CreateListener",
+          "elasticloadbalancing:CreateRule",
           "elasticloadbalancing:DeleteLoadBalancer",
           "elasticloadbalancing:DeleteListener",
-          "elasticloadbalancing:CreateRule",
-          "elasticloadbalancing:DeleteRule",
+          "elasticloadbalancing:DeleteRule"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:CreateTargetGroup",
+          "elasticloadbalancing:DeleteTargetGroup",
+          "elasticloadbalancing:RegisterTargets",
+          "elasticloadbalancing:DeregisterTargets"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "elasticloadbalancing:SetWebAcl",
           "elasticloadbalancing:ModifyLoadBalancerAttributes",
           "elasticloadbalancing:ModifyListener",
+          "elasticloadbalancing:ModifyRule",
+          "elasticloadbalancing:SetSecurityGroups",
+          "elasticloadbalancing:SetSubnets",
           "elasticloadbalancing:AddTags",
           "elasticloadbalancing:RemoveTags"
         ]
@@ -77,10 +146,6 @@ resource "aws_iam_policy" "aws_lb_controller_policy" {
       {
         Effect = "Allow"
         Action = [
-          "elasticloadbalancing:RegisterTargets",
-          "elasticloadbalancing:DeregisterTargets",
-          "elasticloadbalancing:CreateTargetGroup",
-          "elasticloadbalancing:DeleteTargetGroup",
           "elasticloadbalancing:ModifyTargetGroup",
           "elasticloadbalancing:ModifyTargetGroupAttributes"
         ]

@@ -74,7 +74,7 @@ resource "aws_db_instance" "postgres_orders" {
 }
 
 resource "aws_dynamodb_table" "carts_table" {
-name = "project-bedrock-carts-v5"
+name           = "project-bedrock-carts-v6"
   billing_mode   = "PAY_PER_REQUEST" 
   hash_key       = "id"
 
