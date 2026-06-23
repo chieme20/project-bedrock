@@ -18,5 +18,3 @@ variable "student_id" {
   type    = string
   default = "alt-soe-025-3671" 
 }
-
-
