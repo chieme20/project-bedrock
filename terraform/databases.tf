@@ -1,7 +1,7 @@
 resource "aws_db_subnet_group" "db_subnets" {
   name        = "project-bedrock-db-subnet-group-${random_string.suffix.result}"
   description = "Private subnets for secure RDS instances"
-  subnet_ids  = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+  subnet_ids  = data.aws_subnets.default.ids 
 
   tags = {
     Name = "project-bedrock-db-subnet-group"
@@ -11,7 +11,7 @@ resource "aws_db_subnet_group" "db_subnets" {
 resource "aws_security_group" "db_sg" {
   name        = "project-bedrock-database-sg-${random_string.suffix.result}"
   description = "Isolate database traffic to EKS cluster node pools"
-  vpc_id      = aws_vpc.bedrock_vpc.id
+  vpc_id      = data.aws_vpc.bedrock_vpc.id
 
   ingress {
     from_port       = 3306
