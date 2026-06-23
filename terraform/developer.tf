@@ -1,6 +1,5 @@
 resource "aws_iam_user" "dev_user" {
-
-  name = "bedrock-dev-view"
+name = "project-bedrock-cluster-execution-role-v3"
 }
 
 

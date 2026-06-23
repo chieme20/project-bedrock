@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "assets_bucket" {
-  bucket        = "bedrock-assets-${var.student_id}"
+bucket = "bedrock-assets-alt-soe-025-3671-v3"
   force_destroy = true 
 }
 
@@ -12,7 +12,7 @@ resource "aws_s3_bucket_public_access_block" "assets_bucket_privacy" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-name = "project-bedrock-lambda-execution-role-v2"
+name = "project-bedrock-lambda-execution-role-v3"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
