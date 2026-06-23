@@ -5,31 +5,26 @@ resource "aws_default_vpc" "bedrock_vpc" {
   }
 }
 
-# Fetch the existing default subnets already built inside your AWS account
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [aws_default_vpc.bedrock_vpc.id]
-  }
+# Fetch the existing availability zones in the region
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
-# Use the existing discovered subnets instead of building new ones
+# Subnets allocated to a completely clean higher-tier address block
 resource "aws_subnet" "private_1" {
-  availability_zone = "us-east-1a"
   vpc_id            = aws_default_vpc.bedrock_vpc.id
-  
-  # Point this to the first default subnet discovered
-  lifecycle {
-    ignore_changes = all
+  cidr_block        = "172.31.80.0/20"
+  availability_zone = data.aws_availability_zones.available.names[0]
+  tags = {
+    Name = "project-bedrock-private-1-${random_string.suffix.result}"
   }
 }
 
 resource "aws_subnet" "private_2" {
-  availability_zone = "us-east-1b"
   vpc_id            = aws_default_vpc.bedrock_vpc.id
-
-  # Point this to the second default subnet discovered
-  lifecycle {
-    ignore_changes = all
+  cidr_block        = "172.31.96.0/20"
+  availability_zone = data.aws_availability_zones.available.names[1]
+  tags = {
+    Name = "project-bedrock-private-2-${random_string.suffix.result}"
   }
 }
