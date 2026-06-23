@@ -9,8 +9,14 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
+variable "vpc_name" {
+  type    = string
+  default = "project-bedrock-vpc"
+}
+
 variable "student_id" {
   type    = string
   default = "alt-soe-025-3671" 
 }
+
 
