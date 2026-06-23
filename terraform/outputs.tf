@@ -4,7 +4,7 @@ output "region" {
 }
 
 output "vpc_id" {
-  value       = aws_vpc.bedrock_vpc.id
+  value       = aws_default_vpc.bedrock_vpc.id
   description = "The ID of the generated VPC network"
 }
 
