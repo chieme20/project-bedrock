@@ -38,7 +38,7 @@ resource "aws_eks_node_group" "bedrock_nodes" {
     aws_subnet.private_2.id
   ]
 
-  instance_types = ["t3.medium"] 
+  instance_types = ["t2.micro"] 
 
 
   scaling_config {

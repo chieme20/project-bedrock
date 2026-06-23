@@ -1,10 +1,10 @@
 resource "aws_s3_bucket" "assets_bucket" {
-  bucket        = "bedrock-assets-${var.student_id}-v6"
+  bucket        = "bedrock-assets-${var.student_id}-${random_string.suffix.result}"
   force_destroy = true
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name = "project-bedrock-lambda-execution-role-v6"
+  name = "project-bedrock-lambda-execution-role-${random_string.suffix.result}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

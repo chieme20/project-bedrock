@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "db_subnets" {
-name = "project-bedrock-db-subnet-group-v5"
+  name       = "project-bedrock-db-subnet-group-${random_string.suffix.result}"
   description = "Private subnets for secure RDS instances"
   subnet_ids  = [aws_subnet.private_1.id, aws_subnet.private_2.id]
 
@@ -74,7 +74,7 @@ resource "aws_db_instance" "postgres_orders" {
 }
 
 resource "aws_dynamodb_table" "carts_table" {
-name           = "project-bedrock-carts-v6"
+  name         = "project-bedrock-carts-${random_string.suffix.result}"
   billing_mode   = "PAY_PER_REQUEST" 
   hash_key       = "id"
 

@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "db_credentials" {
-  name                    = "project-bedrock-db-secrets-v6"
+  name = "project-bedrock-db-secrets-${random_string.suffix.result}"
   recovery_window_in_days = 0
 }
 
