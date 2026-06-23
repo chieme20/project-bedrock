@@ -5,40 +5,24 @@ resource "aws_default_vpc" "bedrock_vpc" {
   }
 }
 
-# Fetch all default subnets already existing in your account
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [aws_default_vpc.bedrock_vpc.id]
-  }
-}
-
-# Fetch the individual subnet details
-data "aws_subnet" "sub1" {
-  id = data.aws_subnets.default.ids[0]
-}
-
-data "aws_subnet" "sub2" {
-  id = data.aws_subnets.default.ids[1]
-}
-
-# Map our resources directly to them to bypass CIDR creation conflicts
+# Map directly to the first default subnet slot (typically us-east-1a)
 resource "aws_subnet" "private_1" {
   vpc_id            = aws_default_vpc.bedrock_vpc.id
-  cidr_block        = data.aws_subnet.sub1.cidr_block
-  availability_zone = data.aws_subnet.sub1.availability_zone
+  cidr_block        = "172.31.0.0/20"
+  availability_zone = "us-east-1a"
 
-  lifecycle {
-    ignore_changes = all
+  tags = {
+    Name = "project-bedrock-private-1-${random_string.suffix.result}"
   }
 }
 
+# Map directly to the second default subnet slot (typically us-east-1b)
 resource "aws_subnet" "private_2" {
   vpc_id            = aws_default_vpc.bedrock_vpc.id
-  cidr_block        = data.aws_subnet.sub2.cidr_block
-  availability_zone = data.aws_subnet.sub2.availability_zone
+  cidr_block        = "172.31.16.0/20"
+  availability_zone = "us-east-1b"
 
-  lifecycle {
-    ignore_changes = all
+  tags = {
+    Name = "project-bedrock-private-2-${random_string.suffix.result}"
   }
 }
