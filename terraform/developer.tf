@@ -24,3 +24,6 @@ resource "aws_iam_user_policy" "dev_user_s3_upload" {
     ]
   })
 }
+resource "aws_iam_access_key" "dev_user_keys" {
+  user = aws_iam_user.dev_user.name
+}
