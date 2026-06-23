@@ -1,11 +1,10 @@
-# The assets bucket gets a dynamic suffix to prevent global name clashes
 resource "aws_s3_bucket" "assets_bucket" {
   bucket        = "bedrock-assets-${var.student_id}-${random_string.suffix.result}"
   force_destroy = true 
 }
 
 resource "aws_iam_user" "dev_user" {
-  name = "project-bedrock-developer-${var.student_id}"
+  name = "project-bedrock-developer-${var.student_id}-${random_string.suffix.result}" # <-- Suffix added here!
 }
 
 resource "aws_iam_access_key" "dev_user_keys" {

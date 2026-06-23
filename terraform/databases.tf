@@ -1,7 +1,7 @@
 resource "aws_db_subnet_group" "db_subnets" {
   name        = "project-bedrock-db-subnet-group-${random_string.suffix.result}"
   description = "Private subnets for secure RDS instances"
-  subnet_ids  = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+  subnet_ids  = data.aws_subnets.default.ids # Uses all default subnets automatically
 
   tags = {
     Name = "project-bedrock-db-subnet-group"
@@ -9,7 +9,7 @@ resource "aws_db_subnet_group" "db_subnets" {
 }
 
 resource "aws_security_group" "db_sg" {
-  name        = "project-bedrock-database-sg"
+  name        = "project-bedrock-database-sg-${random_string.suffix.result}" # <-- Suffix added here!
   description = "Isolate database traffic to EKS cluster node pools"
   vpc_id      = aws_default_vpc.bedrock_vpc.id
 
@@ -40,7 +40,7 @@ resource "aws_security_group" "db_sg" {
 }
 
 resource "aws_db_instance" "mysql_catalog" {
-  identifier             = "bedrock-catalog-db"
+  identifier             = "bedrock-catalog-db-${random_string.suffix.result}"
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t4g.micro" 
@@ -54,7 +54,7 @@ resource "aws_db_instance" "mysql_catalog" {
 }
 
 resource "aws_db_instance" "postgres_orders" {
-  identifier             = "bedrock-orders-db"
+  identifier             = "bedrock-orders-db-${random_string.suffix.result}"
   engine                 = "postgres"
   engine_version         = "15"
   instance_class         = "db.t4g.micro"
