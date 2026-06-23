@@ -5,12 +5,12 @@ variable "aws_region" {
 
 variable "vpc_name" {
   type    = string
-  default = "project-bedrock-vpc"
+  default = "project-bedrock-vpc-v4" # <-- Changed to v4
 }
 
 variable "cluster_name" {
   type    = string
-  default = "project-bedrock-cluster"
+  default = "project-bedrock-cluster-v4" # <-- Changed to v4
 }
 
 variable "student_id" {
