@@ -8,16 +8,15 @@ resource "aws_eks_cluster" "bedrock_cluster" {
     endpoint_private_access = true   
     endpoint_public_access  = true   
 
-    # The cluster engine sits across our private subnets for production protection
     subnet_ids = [
       aws_subnet.private_1.id,
       aws_subnet.private_2.id
     ]
-  } # <-- This brace correctly closes only the vpc_config sub-block
+  }
 
- access_config {
+  access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
-    bootstrap_cluster_creator_admin_permissions = true # This forces AWS to give martina2 root cluster admin rights!
+    bootstrap_cluster_creator_admin_permissions = true 
   }
 
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
@@ -26,7 +25,6 @@ resource "aws_eks_cluster" "bedrock_cluster" {
     aws_iam_role_policy_attachment.amazon_eks_cluster_policy
   ]
 }
-
 
 resource "aws_eks_node_group" "bedrock_nodes" {
   cluster_name    = aws_eks_cluster.bedrock_cluster.name
@@ -40,12 +38,12 @@ resource "aws_eks_node_group" "bedrock_nodes" {
 
   instance_types = ["t2.micro"] 
 
-
   scaling_config {
     desired_size = 1
     max_size     = 1
     min_size     = 1
   }
+
   update_config {
     max_unavailable = 1
   }
@@ -56,5 +54,3 @@ resource "aws_eks_node_group" "bedrock_nodes" {
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
   ]
 }
-
-

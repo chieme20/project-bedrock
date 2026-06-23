@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "db_subnets" {
-  name       = "project-bedrock-db-subnet-group-${random_string.suffix.result}"
+  name        = "project-bedrock-db-subnet-group-${random_string.suffix.result}"
   description = "Private subnets for secure RDS instances"
   subnet_ids  = [aws_subnet.private_1.id, aws_subnet.private_2.id]
 
@@ -11,9 +11,8 @@ resource "aws_db_subnet_group" "db_subnets" {
 resource "aws_security_group" "db_sg" {
   name        = "project-bedrock-database-sg"
   description = "Isolate database traffic to EKS cluster node pools"
-  vpc_id      = aws_vpc.bedrock_vpc.id
+  vpc_id      = aws_default_vpc.bedrock_vpc.id
 
-  
   ingress {
     from_port       = 3306
     to_port         = 3306
@@ -21,15 +20,12 @@ resource "aws_security_group" "db_sg" {
     security_groups = [aws_security_group.eks_nodes_sg.id]
   }
 
- 
-
   ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.eks_nodes_sg.id]
   }
-
 
   egress {
     from_port   = 0
@@ -51,7 +47,6 @@ resource "aws_db_instance" "mysql_catalog" {
   allocated_storage      = 20
   db_name                = "catalog"
   username               = "dbadmin"
-  # CHANGE THIS LINE: Remove the @ symbol
   password               = "chichiBekee2026" 
   db_subnet_group_name   = aws_db_subnet_group.db_subnets.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
@@ -66,7 +61,6 @@ resource "aws_db_instance" "postgres_orders" {
   allocated_storage      = 20
   db_name                = "orders"
   username               = "dbadmin"
-   
   password               = "chichiBekee2026"
   db_subnet_group_name   = aws_db_subnet_group.db_subnets.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
@@ -75,8 +69,8 @@ resource "aws_db_instance" "postgres_orders" {
 
 resource "aws_dynamodb_table" "carts_table" {
   name         = "project-bedrock-carts-${random_string.suffix.result}"
-  billing_mode   = "PAY_PER_REQUEST" 
-  hash_key       = "id"
+  billing_mode = "PAY_PER_REQUEST" 
+  hash_key     = "id"
 
   attribute {
     name = "id"
