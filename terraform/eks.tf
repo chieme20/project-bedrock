@@ -22,10 +22,10 @@ resource "aws_eks_cluster" "bedrock_cluster" {
   ]
 }
 
-# Launch Template updated to t3.micro for Free Tier compliance in managed node groups
+# The launch template exclusively manages the t3.micro type setting
 resource "aws_launch_template" "eks_nodes" {
   name_prefix   = "eks-nodes-${random_string.suffix.result}-"
-  instance_type = "t3.micro" # <-- Updated here!
+  instance_type = "t3.micro" 
 
   network_interfaces {
     associate_public_ip_address = true
@@ -46,7 +46,7 @@ resource "aws_eks_node_group" "bedrock_nodes" {
   node_role_arn   = aws_iam_role.node_role.arn
   subnet_ids      = data.aws_subnets.default.ids
 
-  instance_types = ["t3.micro"] # <-- Updated here!
+  # Removed duplicate instance_types array to clear the API conflict error
 
   launch_template {
     id      = aws_launch_template.eks_nodes.id
