@@ -22,7 +22,13 @@ resource "aws_eks_cluster" "bedrock_cluster" {
   ]
 }
 
-# The launch template exclusively manages the t3.micro type setting
+# Grants the worker node IAM role explicit permission to join the cluster backend
+resource "aws_eks_access_entry" "node_access" {
+  cluster_name  = aws_eks_cluster.bedrock_cluster.name
+  principal_arn = aws_iam_role.node_role.arn
+  type          = "EC2_LINUX"
+}
+
 resource "aws_launch_template" "eks_nodes" {
   name_prefix   = "eks-nodes-${random_string.suffix.result}-"
   instance_type = "t3.micro" 
@@ -46,8 +52,6 @@ resource "aws_eks_node_group" "bedrock_nodes" {
   node_role_arn   = aws_iam_role.node_role.arn
   subnet_ids      = data.aws_subnets.default.ids
 
-  # Removed duplicate instance_types array to clear the API conflict error
-
   launch_template {
     id      = aws_launch_template.eks_nodes.id
     version = aws_launch_template.eks_nodes.latest_version
@@ -67,6 +71,7 @@ resource "aws_eks_node_group" "bedrock_nodes" {
     aws_iam_role_policy_attachment.amazon_eks_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
-    aws_launch_template.eks_nodes
+    aws_launch_template.eks_nodes,
+    aws_eks_access_entry.node_access
   ]
 }
