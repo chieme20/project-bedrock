@@ -39,20 +39,6 @@ resource "aws_security_group" "db_sg" {
   }
 }
 
-resource "aws_db_instance" "mysql_catalog" {
-  identifier             = "bedrock-catalog-db-${random_string.suffix.result}"
-  engine                 = "mysql"
-  engine_version         = "8.0"
-  instance_class         = "db.t4g.micro" 
-  allocated_storage      = 20
-  db_name                = "catalog"
-  username               = "dbadmin"
-  password               = "chichiBekee2026" 
-  db_subnet_group_name   = aws_db_subnet_group.db_subnets.name
-  vpc_security_group_ids = [aws_security_group.db_sg.id]
-  skip_final_snapshot    = true                       
-}
-
 resource "aws_dynamodb_table" "carts_table" {
   name         = "project-bedrock-carts-${random_string.suffix.result}"
   billing_mode = "PAY_PER_REQUEST" 
