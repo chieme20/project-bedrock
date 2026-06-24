@@ -22,13 +22,35 @@ resource "aws_eks_cluster" "bedrock_cluster" {
   ]
 }
 
+# Launch Template to force auto-assign public IP for worker nodes
+resource "aws_launch_template" "eks_nodes" {
+  name_prefix   = "eks-nodes-${random_string.suffix.result}-"
+  instance_type = "t2.micro"
+
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups             = [aws_security_group.eks_nodes_sg.id]
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "project-bedrock-worker-node"
+    }
+  }
+}
+
 resource "aws_eks_node_group" "bedrock_nodes" {
   cluster_name    = aws_eks_cluster.bedrock_cluster.name
   node_group_name = "project-bedrock-worker-nodes"
   node_role_arn   = aws_iam_role.node_role.arn
   subnet_ids      = data.aws_subnets.default.ids
 
-  instance_types = ["t2.micro"] 
+  # Uses the launch template to override subnet configuration
+  launch_template {
+    id      = aws_launch_template.eks_nodes.id
+    version = aws_launch_template.eks_nodes.latest_version
+  }
 
   scaling_config {
     desired_size = 1
@@ -44,5 +66,6 @@ resource "aws_eks_node_group" "bedrock_nodes" {
     aws_iam_role_policy_attachment.amazon_eks_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    aws_launch_template.eks_nodes
   ]
 }
